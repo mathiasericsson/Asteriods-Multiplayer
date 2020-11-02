@@ -20,7 +20,7 @@ typedef double float64;
 
 constexpr uint16 	c_port = 9999;
 constexpr uint32 	c_socket_buffer_size = 1024;
-constexpr uint16	c_max_clients = 32;
+constexpr uint16	c_max_clients = 64;
 constexpr uint32	c_ticks_per_second = 60;
 constexpr float32	c_seconds_per_tick = 1.0f / (float32)c_ticks_per_second;
 
