@@ -154,7 +154,7 @@ void main()
 					{
 						objectComponent newObject;
 
-						//Set random rotation and add velocity
+						//Set random rotation and add velocity, only so that I can test with many clients!
 						newObject.rotation = rand() % 360;
 						newObject.velocityX += (sin(((float32)newObject.rotation / 180 * M_PI))) ;
 						newObject.velocityY += (-cos(((float32)newObject.rotation / 180 * M_PI))) ;

@@ -47,10 +47,9 @@ int main()
     sf::RenderWindow window(sf::VideoMode(1000, 1000), "Massive Asteroids Multiplayer");
     window.setFramerateLimit(60);
     
-    //Thrust TODO: implement fire thurst that only needs to live on client
-      
-    clientObject allShips[c_max_clients];
+    //TODO: Implement visual thurst that only lives on client
 
+    clientObject allShips[c_max_clients];
 
     //Struct asteriod
     struct object asteroid;
@@ -140,8 +139,10 @@ int main()
 
                 //Join server
                 case sf::Keyboard::J:
-                    /*
-                    sendBuffer[0] = (int8)Client_Message::Join;
+                    
+                    //This is moved as I want the clients to join right away instead of waiting for J to be pushed. For testing purposes
+                    
+                    /*sendBuffer[0] = (int8)Client_Message::Join;
 
                     //TODO, only allow one ID per client, or perhaps from server to fix that!
                     if (Net::socket_send(&sock, sendBuffer, c_socket_buffer_size, &server_endpoint))
@@ -157,8 +158,6 @@ int main()
                 break;
             }
         }//End windows poll event
-
-
 
         
         //Check for responses
@@ -206,7 +205,6 @@ int main()
                 deserialise_u8(&buffer_iter, &message_type);
                 bytes_read++;
 
-               //TODO: Test this so it works with multiple clients!
                while(bytes_read < bytes_received)
                {
                     //Get client ID
@@ -266,22 +264,14 @@ int main()
 
        window.clear();
 
-       bool anyShipOnScreen = false;
 
        for (uint8 i = 0; i < c_max_clients; ++i)
        {   
-           //TODO: Improve with dissconnection and stuffs
            if(allShips[i].connected)
            {
                 window.draw(allShips[i].mesh);
-                anyShipOnScreen = true;
            }
-
         }
-
-       //if (!anyShipOnScreen)
-           //std::cout << "Remember to press J to join server\n";
-           //TODO: Create a button to join server?
        
        
        //window.draw(asteroid.mesh);
