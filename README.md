@@ -75,8 +75,3 @@ While an asteroid would have
 And a "bullet"
 - Object
 - Projectile
-
-
-
-
-

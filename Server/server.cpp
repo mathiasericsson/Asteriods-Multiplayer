@@ -125,8 +125,8 @@ void main()
 				printf("Client joining...");
 
 				//Check if there are any empty slots
-				uint16 slot = (uint8)-1;
-				for (uint16 i = 0; i < c_max_clients; ++i)
+				uint8 slot = (uint8)-1;
+				for (uint8 i = 0; i < c_max_clients; ++i)
 				{
 					if (client_endpoints[i].address == 0)
 					{
