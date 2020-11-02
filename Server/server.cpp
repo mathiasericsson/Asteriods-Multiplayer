@@ -153,6 +153,13 @@ void main()
 					if (Net::socket_send(&sock, buffer, c_socket_buffer_size, &from))
 					{
 						objectComponent newObject;
+
+						//Set random rotation and add velocity
+						newObject.rotation = rand() % 360;
+						newObject.velocityX += (sin(((float32)newObject.rotation / 180 * M_PI))) ;
+						newObject.velocityY += (-cos(((float32)newObject.rotation / 180 * M_PI))) ;
+
+
 						client_endpoints[slot] = from;
 						time_since_heard_from_clients[slot] = 0.0f;
 						client_objects[slot] = newObject;

@@ -90,6 +90,15 @@ int main()
     Net::IP_Endpoint from;
     uint32 bytes_received;
 
+    /*Debug, join automatically!*/
+    sendBuffer[0] = (int8)Client_Message::Join;
+
+    //TODO, only allow one ID per client, or perhaps from server to fix that!
+    if (Net::socket_send(&sock, sendBuffer, c_socket_buffer_size, &server_endpoint))
+    {
+        std::cout << "Joining server\n";
+    }
+
 
     while (window.isOpen())
     {
@@ -131,14 +140,14 @@ int main()
 
                 //Join server
                 case sf::Keyboard::J:
-
+                    /*
                     sendBuffer[0] = (int8)Client_Message::Join;
 
                     //TODO, only allow one ID per client, or perhaps from server to fix that!
                     if (Net::socket_send(&sock, sendBuffer, c_socket_buffer_size, &server_endpoint))
                     {
                         std::cout << "Joining server\n";
-                    }
+                    }*/
      
                     break;
                 }
@@ -148,6 +157,8 @@ int main()
                 break;
             }
         }//End windows poll event
+
+
 
         
         //Check for responses
