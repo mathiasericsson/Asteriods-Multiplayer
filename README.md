@@ -1,4 +1,4 @@
-To see older comitt history, check the FPS-Multiplayer-tutorial repository.
+To see older commit history, check the FPS-Multiplayer-tutorial repository.
 
 
 The game: MP-Asteriods (but not shot asteroids but each others, like a battle royal :-p)

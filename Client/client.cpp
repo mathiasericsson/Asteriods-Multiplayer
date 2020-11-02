@@ -268,12 +268,12 @@ int main()
 
         }
 
-       if (!anyShipOnScreen)
+       //if (!anyShipOnScreen)
            //std::cout << "Remember to press J to join server\n";
            //TODO: Create a button to join server?
        
        
-       window.draw(asteroid.mesh);
+       //window.draw(asteroid.mesh);
        window.display();
 
 
