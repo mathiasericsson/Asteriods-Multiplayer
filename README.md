@@ -9,7 +9,8 @@ v Build my own client that can be controlled with inputs and join server getting
 v Build a client where I control a "ship" with Asteroids like-controls
 v Have the server authorative on the ships position
 v Show all connected ships positions on each client
-- Create a test enviroment with multiple clients with inputs
+v Create a test enviroment with multiple clients
+
 - Introduce fake lag
 - Implement prediction and correction on client
 - Refactor to an ECS architecture
