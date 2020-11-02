@@ -1,0 +1,19 @@
+
+*.db
+*.db-wal
+*.db-shm
+*.opendb
+*.ipch
+.vs/Asteroids Multiplayer/v16/.suo
+*.filters
+*.user
+*.log
+*.obj
+*.tlog
+*.idb
+*.pdb
+*.ilk
+*.exe
+*.dll
+*.vcxproj
+*.sln
