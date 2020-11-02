@@ -17,3 +17,5 @@
 *.dll
 *.vcxproj
 *.sln
+*.iobj
+*.ipdb
