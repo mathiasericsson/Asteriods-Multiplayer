@@ -266,8 +266,7 @@ void main()
 					client_endpoints[i] = {};
 				}
 
-				printf("r: %d, x:%.2f, y:%.2f\n", client_objects[i].rotation, client_objects[i].velocityX, client_objects[i].velocityY);
-
+				
 				//Updatet this objects position
 				updateServerObjectPosition(client_objects[i]);
 
