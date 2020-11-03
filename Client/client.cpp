@@ -203,30 +203,28 @@ int main()
             
             case Server_Message::State:
 
-
+#ifdef PACKAGE_LOSS
                 //Package loss simulation
                 //Randomize when package loss starts
                 if ((rand() % 20) == 0 & !loss_sequence_running)
                 {
                     loss_sequence_running = true;
-                    printf("Package drop started\n");
                 }
                 //Randomize how many packages are lost every time
                 if (drop_counter > packages_lost)
                 {
-                    printf("Dropcounter larger than 100\n");
                     loss_sequence_running = false;
                     drop_counter = 0;
                     packages_lost = rand() % 20;
                 }
                 //Count packages lost
                 if (loss_sequence_running) {
-                    printf("Package dropped\n");
                     drop_counter++;
                 }
                 //Do magic when we actually got a package through :-)
                 else
                 {
+#endif
                     uint8 bufferClientId;
                     float32 bufferPositionX = 0.f;
                     float32 bufferPositionY = 0.f;
@@ -264,7 +262,9 @@ int main()
                         allShips[bufferClientId].connected = true;
 
                     }
+#ifdef PACKAGE_LOSS
                 }
+#endif
                 break;
             }
 
