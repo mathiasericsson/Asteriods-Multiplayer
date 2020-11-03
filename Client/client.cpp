@@ -35,6 +35,12 @@ static input user_input;
 
 int main()
 {
+
+    //Package drop variables
+    uint8 drop_counter = 0;
+    bool loss_sequence_running = false;
+    uint8 packages_lost = rand() % 20;
+
     //Variables
     int speed = 5;
     sf::Vector2f midScreen(500, 500);
@@ -159,6 +165,7 @@ int main()
             }
         }//End windows poll event
 
+     
         
         //Check for responses
         while (Net::socket_receive(&sock, buffer, c_socket_buffer_size, &from, &bytes_received))
@@ -166,6 +173,7 @@ int main()
 
             uint8* buffer_iter = buffer;
             uint8 message_type;
+
            
             switch ((Server_Message)buffer[0])
             {
@@ -195,42 +203,67 @@ int main()
             
             case Server_Message::State:
 
-                uint8 bufferClientId;
-                float32 bufferPositionX = 0.f;
-                float32 bufferPositionY = 0.f;
-                uint16 bufferRotation = 0;
-                uint32 bytes_read = 0;
 
-                //Get message type
-                deserialise_u8(&buffer_iter, &message_type);
-                bytes_read++;
+                //Package loss simulation
+                //Randomize when package loss starts
+                if ((rand() % 20) == 0 & !loss_sequence_running)
+                {
+                    loss_sequence_running = true;
+                    printf("Package drop started\n");
+                }
+                //Randomize how many packages are lost every time
+                if (drop_counter > packages_lost)
+                {
+                    printf("Dropcounter larger than 100\n");
+                    loss_sequence_running = false;
+                    drop_counter = 0;
+                    packages_lost = rand() % 20;
+                }
+                //Count packages lost
+                if (loss_sequence_running) {
+                    printf("Package dropped\n");
+                    drop_counter++;
+                }
+                //Do magic when we actually got a package through :-)
+                else
+                {
+                    uint8 bufferClientId;
+                    float32 bufferPositionX = 0.f;
+                    float32 bufferPositionY = 0.f;
+                    uint16 bufferRotation = 0;
+                    uint32 bytes_read = 0;
 
-               while(bytes_read < bytes_received)
-               {
-                    //Get client ID
-                    deserialise_u8(&buffer_iter, &bufferClientId);
+                    //Get message type
+                    deserialise_u8(&buffer_iter, &message_type);
                     bytes_read++;
 
-                    //Get positionX
-                    deserialise_f32(&buffer_iter, &bufferPositionX);
-                    bytes_read += 4;
+                   while(bytes_read < bytes_received)
+                   {
+                        //Get client ID
+                        deserialise_u8(&buffer_iter, &bufferClientId);
+                        bytes_read++;
 
-                    //Get positionY
-                    deserialise_f32(&buffer_iter, &bufferPositionY);
-                    bytes_read += 4;
+                        //Get positionX
+                        deserialise_f32(&buffer_iter, &bufferPositionX);
+                        bytes_read += 4;
 
-                    allShips[bufferClientId].setVelocity(bufferPositionX, bufferPositionY);
+                        //Get positionY
+                        deserialise_f32(&buffer_iter, &bufferPositionY);
+                        bytes_read += 4;
+
+                        allShips[bufferClientId].setVelocity(bufferPositionX, bufferPositionY);
                    
 
-                    //Get rotation
-                    deserialise_u16(&buffer_iter, &bufferRotation);
-                    bytes_read += 2;
+                        //Get rotation
+                        deserialise_u16(&buffer_iter, &bufferRotation);
+                        bytes_read += 2;
                     
-                    allShips[bufferClientId].mesh.setRotation(bufferRotation);
-                    allShips[bufferClientId].setPosition();
+                        allShips[bufferClientId].mesh.setRotation(bufferRotation);
+                        allShips[bufferClientId].setPosition();
 
-                    allShips[bufferClientId].connected = true;
+                        allShips[bufferClientId].connected = true;
 
+                    }
                 }
                 break;
             }
