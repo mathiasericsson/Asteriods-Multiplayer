@@ -1,0 +1,33 @@
+This is my thoughts on how to implement prediction and correction:
+
+Questions:
+Should I predict only the player object or every enemy also?
+- Start with only player
+
+Do I need velocity sent from server to client?
+- No, the only thing I need from server is information to know if my prediction was correct or not. Meaning position and rotation.
+^^ is wrong, I need to velocity when re-predicting the client movement as this number also might missmatch.
+
+Is the server and client ticks the same or do I need to align these?
+- ??
+
+Package drops on the input message?
+No idea... I assume server would have to assume it get's the same input as last time it recived a valid input. Or assume no input?
+Not part of the scope for this, but explore how this is done in other games!
+Seems to be a paragraph around that in this article: 
+https://www.codersblock.org/blog/multiplayer-fps-part-5
+
+Correction, why I can't just replace the new information from server on the client. 
+- The client already moved on and are further away in the future. Meaning I need to store historical data on the client, so that I can use this to re-predict whenever I get a corrected state. This page explains this pretty well:
+https://www.codersblock.org/blog/multiplayer-fps-part-5
+
+
+Approach
+- Predict player rotation and position on client
+- Add tick number to both input and state package (make sure these are aligned)
+	- Update tick on client on every package from server?
+- Add storage of historical tick data on client (for resimulation)
+- When new state package, check if position and rotation matches (on that particular tick?)
+	- If true, all good!
+	- If false, correct that ticks information and re-run the prediction from that point to present the new real (future) position
+
