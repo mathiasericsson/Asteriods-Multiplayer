@@ -204,7 +204,6 @@ int main()
             case Server_Message::State:
 
 #ifdef PACKAGE_LOSS
-                //Package loss simulation
                 //Randomize when package loss starts
                 if ((rand() % 20) == 0 & !loss_sequence_running)
                 {
