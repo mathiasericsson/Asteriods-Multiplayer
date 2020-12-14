@@ -1,4 +1,4 @@
-This is my thoughts on how to implement prediction and correction:
+This are my thoughts on how to implement prediction and correction:
 
 Questions:
 Should I predict only the player object or every enemy also?
@@ -31,3 +31,6 @@ Approach
 	- If true, all good!
 	- If false, correct that ticks information and re-run the prediction from that point to present the new real (future) position
 
+
+Limiations
+- Only predict and correct local player, not all other players. 

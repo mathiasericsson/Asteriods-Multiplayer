@@ -55,7 +55,7 @@ TODO:
 #include "object_component.cpp"
 #include "object_system.cpp"
 
-constexpr uint16 c_turn_speed = 5;	// how fast player turns
+
 constexpr float32 c_max_speed = 50.f; //TODO: Implement so that we have a max speed
 constexpr float32 c_client_timeout = 60.f;
 
@@ -142,23 +142,45 @@ void main()
 				{
 					printf("client slot = %hu\n", slot);
 
+					//Set random rotation and add velocity, only so that I can test with many clients!
+					objectComponent newObject;
+
+					newObject.rotation = rand() % 360;
+
+					//DEBUG: Use this to set default velocity
+					//newObject.velocityX += (sin(((float32)newObject.rotation / 180 * M_PI)));
+					//newObject.velocityY += (-cos(((float32)newObject.rotation / 180 * M_PI)));
+
+
+					//Prepare package sent to client
+
+					//Set message type
 					buffer[0] = Server_Message::Join_Result;
-					
+					int32 bytes_written = 1;
+
 					//Set second byte to 1 for indicating success 
-					buffer[1] = 1;
+					buffer[bytes_written] = 1;
+					bytes_written += 1; // sizeof(buffer[bytes_written]);
 
 					//Set third byte to the client ID, so that the client can use that when sending input message
-					memcpy(&buffer[2], &slot, 2);
+					memcpy(&buffer[bytes_written], &slot, sizeof(slot));
+					bytes_written += sizeof(slot);
 
-					if (Net::socket_send(&sock, buffer, c_socket_buffer_size, &from))
+					//Send rotation (uint16)
+					memcpy(&buffer[bytes_written], &newObject.rotation, sizeof(newObject.rotation));
+					bytes_written += sizeof(newObject.rotation);
+					
+					//send position X (float32)
+					memcpy(&buffer[bytes_written], &newObject.positionX, sizeof(newObject.positionX));
+					bytes_written += sizeof(newObject.positionX);
+
+					//send position Y (float32)
+					memcpy(&buffer[bytes_written], &newObject.positionY, sizeof(newObject.positionY));
+					bytes_written += sizeof(newObject.positionY);
+
+
+					if (Net::socket_send(&sock, buffer, bytes_written, &from))
 					{
-						objectComponent newObject;
-
-						//Set random rotation and add velocity, only so that I can test with many clients!
-						newObject.rotation = rand() % 360;
-						newObject.velocityX += (sin(((float32)newObject.rotation / 180 * M_PI))) ;
-						newObject.velocityY += (-cos(((float32)newObject.rotation / 180 * M_PI))) ;
-
 
 						client_endpoints[slot] = from;
 						time_since_heard_from_clients[slot] = 0.0f;
@@ -245,6 +267,7 @@ void main()
 					//Increase velocity towards current rotation
 					client_objects[i].velocityX  += (sin(((float32)client_objects[i].rotation / 180 * M_PI))) / 10;
 					client_objects[i].velocityY += (-cos(((float32)client_objects[i].rotation / 180 * M_PI))) / 10;
+
 				}
 				
 				if (client_inputs[i].rotateLeft)

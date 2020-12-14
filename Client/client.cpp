@@ -17,7 +17,6 @@
 - Move object from one side to another
 - ECS?
 - Asteroids simulation on server.
-
 */
 
 
@@ -53,9 +52,8 @@ int main()
     sf::RenderWindow window(sf::VideoMode(1000, 1000), "Massive Asteroids Multiplayer");
     window.setFramerateLimit(60);
     
-    //TODO: Implement visual thurst that only lives on client
-
     clientObject allShips[c_max_clients];
+    clientObject localSimulationShip;
 
     //Struct asteriod
     struct object asteroid;
@@ -129,25 +127,26 @@ int main()
                 //Increase thrust
                 case sf::Keyboard::W:
                     user_input.thurst = true;
+
                     break;
 
                 //Rotate right
                 case sf::Keyboard::D:
                    user_input.rotateRight = true;
-
-                    break;
+                 
+                   break;
 
                 //Rotate left
                 case sf::Keyboard::A:
                     user_input.rotateLeft = true;
-
+               
                     break;
 
                 //Join server
                 case sf::Keyboard::J:
                     
-                    //This is moved as I want the clients to join right away instead of waiting for J to be pushed. For testing purposes
-                    
+                    //This is moved as I want the clients to join right away instead of waiting for J to be pushed. This so I can run batch job to start 40 clients
+
                     /*sendBuffer[0] = (int8)Client_Message::Join;
 
                     //TODO, only allow one ID per client, or perhaps from server to fix that!
@@ -180,6 +179,7 @@ int main()
   
                 case Server_Message::Join_Result:
      
+                    printf("Bytes:%d\n", bytes_received);
                     uint8 success;
                     //Deserialize first uint8 of message (Message type)
                     deserialise_u8(&buffer_iter, &message_type);
@@ -193,12 +193,30 @@ int main()
                     {
                         //Deserilize third uint8 of message (ID)
                         deserialise_u8(&buffer_iter, &clientId);
+
+                        uint16 tmp_rotation;
+                        
+                        float32 tmp_positionX;
+                        float32 tmp_positionY;
+
+                        //Deserilize rotation
+                        deserialise_u16(&buffer_iter, &tmp_rotation);  
+                       
+                        //deserialize position x
+                        deserialise_f32(&buffer_iter, &tmp_positionX);
+                       
+                        //deserialize position y
+                        deserialise_f32(&buffer_iter, &tmp_positionY);
+
+                        //Update local ship
+                        localSimulationShip.mesh.setRotation(tmp_rotation);
+                        localSimulationShip.mesh.setPosition(tmp_positionX, tmp_positionY);
                     }
 
                     printf("Joined server with ClientID = %d\n", clientId);
 
                     allShips[clientId].mesh.setFillColor(sf::Color::Blue);
-                
+                    localSimulationShip.mesh.setFillColor(sf::Color::Red);
                     break;
             
             case Server_Message::State:
@@ -248,13 +266,11 @@ int main()
                         deserialise_f32(&buffer_iter, &bufferPositionY);
                         bytes_read += 4;
 
-                        allShips[bufferClientId].setVelocity(bufferPositionX, bufferPositionY);
-                   
-
                         //Get rotation
                         deserialise_u16(&buffer_iter, &bufferRotation);
                         bytes_read += 2;
                     
+                        allShips[bufferClientId].setVelocity(bufferPositionX, bufferPositionY);
                         allShips[bufferClientId].mesh.setRotation(bufferRotation);
                         allShips[bufferClientId].setPosition();
 
@@ -289,6 +305,20 @@ int main()
             {
                 std::cout << "\nDidn't send key pressed";
             }
+
+            //Local simulation
+            if (user_input.thurst) {
+                localSimulationShip.increaseVelocity();
+            }
+            if (user_input.rotateLeft){
+                localSimulationShip.rotateLeft();
+            }
+            if (user_input.rotateRight) {
+                localSimulationShip.rotateRight();
+            }
+
+                    
+
        }
 
        
@@ -304,7 +334,9 @@ int main()
                 window.draw(allShips[i].mesh);
            }
         }
-       
+
+       localSimulationShip.updatePosition();
+       window.draw(localSimulationShip.mesh);
        
        //window.draw(asteroid.mesh);
        window.display();

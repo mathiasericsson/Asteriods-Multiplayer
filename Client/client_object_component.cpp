@@ -1,5 +1,9 @@
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 #include <SFML/Graphics.hpp>
 #include "common.cpp"
+
 
 class clientObject {
 
@@ -27,8 +31,46 @@ class clientObject {
     {
         mesh.setPosition(velocity);
     }
+
     void setRotation(uint8 rotation)
     {   
         mesh.rotate(rotation);
     }
+    void increaseVelocity()
+    {
+        float32 test = mesh.getRotation();
+        printf("yossss");
+        printf("VeloddddcityX=%f ", velocity.x);
+        //Increase velocity towards current rotation
+        velocity.x += (sin((mesh.getRotation() / 180 * M_PI))) / 10;
+        velocity.y += (-cos((mesh.getRotation() / 180 * M_PI))) / 10;
+        printf("VelossdfsdfsdfcityX=%f \n", velocity.x);
+
+        //float32 += uint16 / 180 * M_PI / 10
+
+    }
+    void rotateLeft()
+    {
+        mesh.setRotation(mesh.getRotation() - c_turn_speed);
+    }
+    void rotateRight()
+    {
+        mesh.setRotation(mesh.getRotation() + c_turn_speed);
+    }
+
+    void updatePosition()
+    {
+        sf::Vector2f new_position = mesh.getPosition();
+
+        new_position.x += velocity.x;
+        new_position.y += velocity.y;
+
+        if (new_position.x < 0.0f) new_position.x = new_position.x + 1000;
+        if (new_position.x >= 1000) new_position.x = new_position.x - 1000;
+
+        if (new_position.y < 1000) new_position.y = new_position.y + 1000;
+        if (new_position.y >= 1000) new_position.y = new_position.y - 1000;
+
+    }
+
 };
