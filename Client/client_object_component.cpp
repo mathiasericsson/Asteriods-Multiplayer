@@ -31,6 +31,10 @@ class clientObject {
     {
         mesh.setPosition(velocity);
     }
+    void setPosition(sf::Vector2f position)
+    {
+        mesh.setPosition(position);
+    }
 
     void setRotation(uint8 rotation)
     {   
@@ -39,15 +43,11 @@ class clientObject {
     void increaseVelocity()
     {
         float32 test = mesh.getRotation();
-        printf("yossss");
-        printf("VeloddddcityX=%f ", velocity.x);
+
         //Increase velocity towards current rotation
         velocity.x += (sin((mesh.getRotation() / 180 * M_PI))) / 10;
         velocity.y += (-cos((mesh.getRotation() / 180 * M_PI))) / 10;
-        printf("VelossdfsdfsdfcityX=%f \n", velocity.x);
-
-        //float32 += uint16 / 180 * M_PI / 10
-
+ 
     }
     void rotateLeft()
     {
@@ -71,6 +71,8 @@ class clientObject {
         if (new_position.y < 1000) new_position.y = new_position.y + 1000;
         if (new_position.y >= 1000) new_position.y = new_position.y - 1000;
 
-    }
+        setPosition(new_position);
 
+    }
+ 
 };

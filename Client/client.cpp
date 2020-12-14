@@ -322,7 +322,7 @@ int main()
        }
 
        
-       asteroid.mesh.move(asteroid_velocity);    
+       //asteroid.mesh.move(asteroid_velocity);    
 
        window.clear();
 
