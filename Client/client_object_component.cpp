@@ -5,6 +5,8 @@
 #include "common.cpp"
 
 
+//TODO: THis is not a ECS component, contains logic. 
+
 class clientObject {
 
     public: 

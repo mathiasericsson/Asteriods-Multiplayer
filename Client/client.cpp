@@ -66,7 +66,7 @@ int main()
     bool32 sleep_granularity_was_set = timeBeginPeriod(sleep_granularity_ms) == TIMERR_NOERROR;
     const uint32	TICKS_PER_SECOND = 60;
     const float32	SECONDS_PER_TICK = 1.0f / float32(TICKS_PER_SECOND);
-
+    uint32 tick_number = (uint32)-1;
     LARGE_INTEGER clock_frequency;
     QueryPerformanceFrequency(&clock_frequency);
 
@@ -194,8 +194,9 @@ int main()
                         //Deserilize third uint8 of message (ID)
                         deserialise_u8(&buffer_iter, &clientId);
 
+                        deserialise_u32(&buffer_iter, &tick_number);
+                       
                         uint16 tmp_rotation;
-                        
                         float32 tmp_positionX;
                         float32 tmp_positionY;
 
@@ -251,6 +252,11 @@ int main()
                     //Get message type
                     deserialise_u8(&buffer_iter, &message_type);
                     bytes_read++;
+
+                    deserialise_u32(&buffer_iter, &tick_number);
+                    bytes_read += 4;
+
+                    printf("tick:%d\n", tick_number);
 
                    while(bytes_read < bytes_received)
                    {

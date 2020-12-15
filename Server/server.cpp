@@ -5,9 +5,14 @@ Client_Message: Join
 int8: Message type
 
 Server_Message: Join_Result
-int8: Message type
-int8: 1 or 0 (success or fail)
-int8: ID to be used when sending other message from client
+int8:		Message type
+int8:		1 or 0 (success or fail)
+int8:		ID to be used when sending other message from client
+uint32:		tick number
+uint16:		Initial rotation
+float32:	Initial position X
+float32:	Initial position Y
+uint32:		Current server tick number (DOING)
 
 Client_Message: leave
 int8: Message type
@@ -19,12 +24,14 @@ int8: ID
 int8: Input (up, down, right and/or left)
 
 Server_Message: State
-int8: Message type
+int8:		Message type
+uint32:		Tick number
+
 For each client
 int8: ClientId
-float32: Position X
-float32: Position Y
-int16: Rotation
+float32:	Position X
+float32:	Position Y
+int16:		Rotation
 
 */
 
@@ -68,6 +75,8 @@ struct Player_Input
 
 void main()
 {
+	uint32 tick_number = 0;
+
 	printf("Server started\n");
 
 	if (!Net::init())
@@ -165,6 +174,10 @@ void main()
 					//Set third byte to the client ID, so that the client can use that when sending input message
 					memcpy(&buffer[bytes_written], &slot, sizeof(slot));
 					bytes_written += sizeof(slot);
+
+					//Set next 4 bytes to tick number
+					memcpy(&buffer[bytes_written], &tick_number, sizeof(tick_number));
+					bytes_written += sizeof(tick_number);
 
 					//Send rotation (uint16)
 					memcpy(&buffer[bytes_written], &newObject.rotation, sizeof(newObject.rotation));
@@ -306,6 +319,10 @@ void main()
 		// create state packet (1 byte)
 		buffer[0] = (int8)Server_Message::State;
 		int32 bytes_written = 1;
+		
+		//Add tick number to state package
+		memcpy(&buffer[bytes_written], &tick_number, sizeof(tick_number));
+		bytes_written += sizeof(tick_number);
 
 		for (uint8 i = 0; i < c_max_clients; ++i)
 		{
@@ -328,12 +345,15 @@ void main()
 				memcpy(&buffer[bytes_written], &client_objects[i].rotation, sizeof(client_objects[i].rotation));
 				bytes_written += sizeof(client_objects[i].rotation);
 
+
 			}
 
 			//Reset client inputs once per frame
 			client_inputs[i] = {};
 
 		}
+
+		printf("tick:%d\n", tick_number);
 
 		// send back to clients
 		for (uint8 i = 0; i < c_max_clients; ++i)
@@ -347,6 +367,8 @@ void main()
 			}
 		}
 		
+		++tick_number;
+
 		wait_for_tick_end(tick_start_time, &timing_info);
 	}
 }

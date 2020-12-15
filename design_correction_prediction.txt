@@ -23,7 +23,7 @@ https://www.codersblock.org/blog/multiplayer-fps-part-5
 
 
 Approach
-- Predict player rotation and position on client
+v Predict player rotation and position on client
 - Add tick number to both input and state package (make sure these are aligned)
 	- Update tick on client on every package from server?
 - Add storage of historical tick data on client (for resimulation)
