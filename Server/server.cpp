@@ -44,7 +44,7 @@ TODO:
 - Prediction and correction support for objects (and on client)
 - Make this an ECS
 
-- Server authorative asteroids
+- Server authorative asteroidsw
 - Collission
 - Bullets
 - Health
