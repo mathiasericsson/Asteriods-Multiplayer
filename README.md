@@ -1,10 +1,13 @@
-#The game
+The game
+----------------
 Embark on an adventure in a vast universe with unlimited possibilites.
 
-#Setup projects
+Setup projects
+---------------------------
 Two projects in VS
 - Client
 - Server
+
 
 Client properties
 ----------------------
